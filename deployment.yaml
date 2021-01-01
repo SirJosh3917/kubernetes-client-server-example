@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubeserver
+spec:
+  selector:
+    app: kubeserver
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeserver
+spec:
+  selector:
+    matchLabels:
+      app: kubeserver
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kubeserver
+    spec:
+      containers:
+        - name: kubeserver
+          image: "localhost:5100/kubeserver:latest"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeclient
+spec:
+  selector:
+    matchLabels:
+      app: kubeclient
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: kubeclient
+    spec:
+      containers:
+        - name: kubeclient
+          image: "localhost:5100/kubeclient:latest"
